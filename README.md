@@ -31,7 +31,7 @@ Advanced charting · full drawing-tool suite · watchlist · depth-of-market · 
 
 ---
 
-## What is OpenCharts?
+## What is Charts?
 
 OpenCharts is a self-contained, professional-grade **trading terminal UI**. Open it
 and you land straight in a live-feeling terminal: a candlestick chart with a full
