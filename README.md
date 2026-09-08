@@ -1,6 +1,6 @@
 <div align="center">
 
-# 📈 OpenCharts
+
 
 **An open-source trading terminal that runs entirely in your browser — no backend, no signup, no API keys.**
 
