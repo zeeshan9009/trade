@@ -467,6 +467,7 @@ export function ToolButton({
 }
 
 const CHART_PLUGIN_ITEMS = [
+  { id: "pattern-detector", icon: TrendingUp, label: "Pattern & Trend Detector" },
   { id: "crosshair", icon: Crosshair, label: "Crosshair Highlight" },
   { id: "session", icon: Clock, label: "Session Highlighting" },
   { id: "session-breaks", icon: CalendarDays, label: "Session Breaks" },
@@ -474,6 +475,7 @@ const CHART_PLUGIN_ITEMS = [
   { id: "tooltip", icon: Info, label: "OHLCV Tooltip" },
   { id: "delta-tooltip", icon: Activity, label: "Delta Tooltip" },
 ] satisfies Array<{ id: string; icon: LucideIcon; label: string }>;
+
 
 function PluginsDropdown({
   activePlugins,

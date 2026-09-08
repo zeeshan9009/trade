@@ -34,6 +34,7 @@ import {
 } from "../../lib/chart-plugins/drawing-tools/line-alerts.ts";
 import { DrawingToolsManager } from "../../lib/chart-plugins/drawing-tools/manager.ts";
 import { CrosshairHighlightPrimitive } from "../../lib/chart-plugins/highlight-bar-crosshair/highlight-bar-crosshair.ts";
+import { PatternDetectorPrimitive } from "../../lib/chart-plugins/pattern-detector/pattern-detector.ts";
 import { SessionBreaks } from "../../lib/chart-plugins/session-breaks/session-breaks.ts";
 import { SessionHighlighting } from "../../lib/chart-plugins/session-highlighting/session-highlighting.ts";
 import { TooltipPrimitive } from "../../lib/chart-plugins/tooltip/tooltip.ts";
@@ -294,6 +295,7 @@ function buildSessionBreaks(ctx: PluginBuildCtx): ISeriesPrimitive<Time> | null 
 }
 
 const PLUGIN_FACTORIES: Record<string, (ctx: PluginBuildCtx) => ISeriesPrimitive<Time> | null> = {
+  "pattern-detector": ({ isDark }) => new PatternDetectorPrimitive({ isDark }),
   crosshair: ({ isDark }) =>
     new CrosshairHighlightPrimitive({
       color: isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)",
@@ -304,6 +306,7 @@ const PLUGIN_FACTORIES: Record<string, (ctx: PluginBuildCtx) => ISeriesPrimitive
   tooltip: () => new TooltipPrimitive({}),
   "delta-tooltip": () => new DeltaTooltipPrimitive({}),
 };
+
 
 function buildPlugin(id: string, ctx: PluginBuildCtx): ISeriesPrimitive<Time> | null {
   return PLUGIN_FACTORIES[id]?.(ctx) ?? null;

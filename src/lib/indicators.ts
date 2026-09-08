@@ -259,7 +259,16 @@ export function vwap(candles: CandleData[]): IndicatorPoint[] {
 }
 
 // ── Indicator Registry (for UI) ──────────────────────────────
-export type IndicatorType = "SMA" | "EMA" | "RSI" | "MACD" | "BOLL" | "ATR" | "STOCH" | "VWAP";
+export type IndicatorType =
+  | "SMA"
+  | "EMA"
+  | "RSI"
+  | "MACD"
+  | "BOLL"
+  | "ATR"
+  | "STOCH"
+  | "VWAP"
+  | "PATTERN_DETECTOR";
 
 export type IndicatorPane = "overlay" | "below";
 
@@ -272,6 +281,13 @@ export interface IndicatorConfig {
 }
 
 export const INDICATOR_REGISTRY: IndicatorConfig[] = [
+  {
+    type: "PATTERN_DETECTOR",
+    label: "Trend & Candle Pattern Detector",
+    pane: "overlay",
+    defaultParams: { smaPeriod: 20 },
+    color: "#0ecb81",
+  },
   {
     type: "SMA",
     label: "Simple Moving Average",
@@ -329,3 +345,4 @@ export const INDICATOR_REGISTRY: IndicatorConfig[] = [
     color: "#42a5f5",
   },
 ];
+

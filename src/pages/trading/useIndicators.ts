@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import type { IChartApi, ISeriesApi, CandlestickData, Time } from "lightweight-charts";
+import type { IChartApi, ISeriesApi, CandlestickData, Time, ISeriesPrimitive } from "lightweight-charts";
 import { LineStyle } from "lightweight-charts";
 import {
   sma,
@@ -13,6 +13,7 @@ import {
   INDICATOR_REGISTRY,
   type IndicatorType,
 } from "../../lib/indicators.ts";
+import { PatternDetectorPrimitive } from "../../lib/chart-plugins/pattern-detector/pattern-detector.ts";
 import { toIndicatorCandles } from "./utils.ts";
 import { CHART_COLORS } from "./constants.ts";
 
@@ -26,29 +27,54 @@ export function useIndicators(
   const indicatorSeriesRef = useRef<Map<string, ISeriesApi<"Line"> | ISeriesApi<"Histogram">>>(
     new Map(),
   );
+  const patternPluginRef = useRef<ISeriesPrimitive<Time> | null>(null);
   const colors = isDark ? CHART_COLORS.dark : CHART_COLORS.light;
 
   useEffect(() => {
     if (!chartRef.current || !candleSeriesRef.current || chartData.length === 0) return;
 
     const chart = chartRef.current;
+    const series = candleSeriesRef.current;
     const indCandles = toIndicatorCandles(chartData);
 
     // Remove old indicator series
-    for (const [_key, series] of indicatorSeriesRef.current) {
+    for (const [_key, s] of indicatorSeriesRef.current) {
       try {
-        chart.removeSeries(series);
+        chart.removeSeries(s);
       } catch {
         /* already removed */
       }
     }
     indicatorSeriesRef.current.clear();
 
+    // Remove old pattern plugin if present
+    if (patternPluginRef.current) {
+      try {
+        series.detachPrimitive(patternPluginRef.current);
+      } catch {
+        /* already removed */
+      }
+      patternPluginRef.current = null;
+    }
+
     for (const type of activeIndicators) {
       const config = INDICATOR_REGISTRY.find((r) => r.type === type);
       if (!config) continue;
 
       switch (type) {
+        case "PATTERN_DETECTOR": {
+          const plugin = new PatternDetectorPrimitive({
+            smaPeriod: config.defaultParams.smaPeriod || 20,
+            isDark,
+          });
+          try {
+            series.attachPrimitive(plugin);
+            patternPluginRef.current = plugin;
+          } catch {
+            /* ignore */
+          }
+          break;
+        }
         case "SMA": {
           const data = sma(indCandles, config.defaultParams.period!);
           const s = chart.addLineSeries({
@@ -202,3 +228,4 @@ export function useIndicators(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeIndicators, chartData, isDark]);
 }
+
